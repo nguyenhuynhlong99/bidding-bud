@@ -98,12 +98,13 @@ export const items = pgTable('bb_item', {
   currentBid: integer('currentBid').notNull().default(0),
   startingPrice: integer('startingPrice').notNull().default(0),
   bidInterval: integer('bidInterval').notNull().default(100),
+  endDate: timestamp('endDate', { mode: 'date' }).notNull(),
 });
 
 export const bids = pgTable('bb_bids', {
   id: serial('id').primaryKey(),
   amount: integer('amount').notNull(),
-  itemId: text('itemId')
+  itemId: serial('itemId')
     .notNull()
     .references(() => items.id, { onDelete: 'cascade' }),
   userId: text('userId')

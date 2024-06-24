@@ -3,6 +3,8 @@ import { Item } from '@/db/schema';
 import Image from 'next/image';
 import Link from 'next/link';
 import { formatToDollar } from './util/currency';
+import { format } from 'date-fns/format';
+import { isBidOver } from './util/bids';
 
 export function ItemCard({ item }: { item: Item }) {
   return (
@@ -13,8 +15,18 @@ export function ItemCard({ item }: { item: Item }) {
         starting price: ${formatToDollar(item.startingPrice)}
       </p>
 
-      <Button asChild>
-        <Link href={`/items/${item.id}`}>Place bid</Link>
+      {isBidOver(item) ? (
+        <p className="text-lg">Auction is over</p>
+      ) : (
+        <p className="text-lg">
+          Ends on: {format(item.endDate, 'eeee M/dd/yy')}
+        </p>
+      )}
+
+      <Button asChild variant={isBidOver(item) ? 'outline' : 'default'}>
+        <Link href={`/items/${item.id}`}>
+          {isBidOver(item) ? 'View Bid' : 'Place bid'}
+        </Link>
       </Button>
     </div>
   );

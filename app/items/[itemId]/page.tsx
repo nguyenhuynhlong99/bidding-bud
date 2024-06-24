@@ -8,6 +8,8 @@ import { createBidAction } from './actions';
 import { getBidsForItem } from '@/data-access/bids';
 import { getItem } from '@/data-access/items';
 import { auth } from '@/auth';
+import { Badge } from '@/components/ui/badge';
+import { isBidOver } from '@/app/util/bids';
 
 function formatTimestamp(timestamp: Date) {
   return formatDistance(timestamp, new Date(), { addSuffix: true });
@@ -43,7 +45,8 @@ export default async function ItemPage({
 
   const hasBids = allBids.length > 0;
 
-  const canPlaceBid = session && item.userId !== session.user.id;
+  const canPlaceBid =
+    session && item.userId !== session.user.id && !isBidOver(item);
 
   return (
     <main className="space-y-8">
@@ -52,6 +55,11 @@ export default async function ItemPage({
           <h1 className={pageTitleStyles}>
             <span className="font-normal">Auction for</span> {item.name}
           </h1>
+          {isBidOver(item) && (
+            <Badge className="w-fit" variant="destructive">
+              Auction over
+            </Badge>
+          )}
           <Image
             className="rounded-xl"
             src={item.imageUrl}
